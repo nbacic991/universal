@@ -29,8 +29,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 async function loadPostCollection() {
-  const client = await mongodb.MongoClient.connect('mongodb://localhost:27017/nekretnine', {useNewUrlParser: true, useUnifiedTopology: true});
-
+  const client = await mongodb.MongoClient.connect(process.env.URL, {useNewUrlParser: true, useUnifiedTopology: true});
   return client.db('nekretnine').collection('nekretnine');
 }
 
