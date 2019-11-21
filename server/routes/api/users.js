@@ -10,11 +10,11 @@ router.get('/', async (req, res) => {
 });
 
 // Gett item by name
-router.get('/user/:name', async (req, res) => {
+router.get('/user/:username', async (req, res) => {
   const posts = await loadPostCollection();
   res.send(await posts.find({
       // '_id': new mongodb.ObjectID(req.params.id) }).toArray()
-      'name': req.params.name
+      'username': req.params.username
     }).toArray()
   );
 });

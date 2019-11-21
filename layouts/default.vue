@@ -1,37 +1,7 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
-    </v-app-bar>
+    <Navbar />
+
     <v-content>
       <nuxt />
     </v-content>
@@ -46,32 +16,38 @@
 
 <script>
 	import { mapMutations } from 'vuex'
+  import Navbar from '~/components/Navbar';
 
 	export default {
 		data() {
 			return {
-				clipped: false,
-				drawer: true,
-				fixed: false,
         isLogged: false,
 				items: [],
-				miniVariant: false,
-				right: true,
-				rightDrawer: false,
-				title: 'Elektronski Dnevnik'
+				fixed: false,
+        user: []
 			};
 		},
+    components: {
+			  Navbar
+    },
     methods: {
 	    ...mapMutations({
 		    toggle: 'todos/toggle'
 	    })
     },
-    created() {
+    async created() {
+	    // window.location.reload(true)
 			this.$store.commit('getMenu')
-      this.isLogged = this.$store.state.isLogged
-      this.items = this.$store.state.items
+      this.isLogged = await this.$store.state.isLogged
+      this.items = await this.$store.state.items
+      this.user = await this.$store.state.user_data
       if (this.$store.state.isLogged) {
-	      this.$router.push({path: '/dashboard'})
+	      let userRole = this.user[0].user_role;
+	      if(userRole === 'role_student') {
+		      this.$router.push({path: '/profile'})
+        } else if(userRole === 'role_admin') {
+		      this.$router.push({path: '/dashboard'})
+        }
       } else {
 	      this.$router.push({path: '/login'})
       }

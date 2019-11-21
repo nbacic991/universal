@@ -20,8 +20,8 @@
 	export default {
 		data() {
 			return {
-				username: 'admin',
-				password: 'admin',
+				username: '',
+				password: '',
 				isLoged: false,
 				message: '',
 				users: []
@@ -31,15 +31,21 @@
 			async userLogin() {
 				let username = this.username;
 				let password = this.password;
+				console.log(password)
 				var tomorrow = new Date();
 				tomorrow.setDate(tomorrow.getDate() + 1);
 				try {
 					this.users = await UsersService.getUserData(username);
+					console.log(this.users)
 					this.isLoged = !this.isLoged;
-					if (this.users[0].password === this.password) {
+					if (this.users[0].password === password) {
 						this.$store.commit('toggle')
-						this.$router.push({path: '/dashboard'});
 						document.cookie = "login=" + this.users[0]._id + "; expires=" + tomorrow + "; path=/";
+						if(this.users[0].user_role === 'role_student') {
+							this.$router.push({path: '/profile', force: true});
+            } else if (this.users[0].user_role === 'role_admin') {
+							this.$router.push({path: '/dashboard', force: true});
+            }
 					}
 				} catch (e) {
 					this.message = e.message;

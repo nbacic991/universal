@@ -1,6 +1,9 @@
+import UsersService from '../getData';
+
 export const state = () => ({
   isLogged: false,
-  items: []
+  items: [],
+  user_data: ''
 });
 
 export const mutations = {
@@ -9,6 +12,7 @@ export const mutations = {
       let userID = document.cookie;
       userID = userID.split("=")[1];
       if(userID) {
+        state.user_data =  UsersService.getUserDataLogin(userID);
         state.isLogged = true;
         state.items = [
           {icon: 'mdi-settings', title: 'Dashboard', to: '/dashboard'},
